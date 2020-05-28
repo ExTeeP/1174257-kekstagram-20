@@ -1,7 +1,7 @@
 # Личный проект «Кекстаграм» [![Build status][travis-image]][travis-url]
 
-* Студент: [Александр Медведев](https://up.htmlacademy.ru/javascript/20/user/1174257).
-* Наставник: `Неизвестно`.
+- Студент: [Александр Медведев](https://up.htmlacademy.ru/javascript/20/user/1174257).
+- Наставник: [Кексобот].
 
 ---
 

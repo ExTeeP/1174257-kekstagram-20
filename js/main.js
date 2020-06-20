@@ -166,3 +166,60 @@ function addToFragment(elements) {
 
 picturesList = createPicturesArray(PICTURES_COUNT);
 usersPictures.appendChild(addToFragment(picturesList));
+
+/* ================================================================================= */
+
+var bigPictureModal = document.querySelector('.big-picture');
+var commentsList = bigPictureModal.querySelector('.social__comments');
+var commentTemplate = bigPictureModal.querySelector('.social__comment');
+
+function showBigPictureModal() {
+  bigPictureModal.classList.remove('hidden');
+  document.body.classList.add('modal-open');
+
+  hideCommentElement();
+  fillBigPicture(picturesList[0]);
+}
+
+function hideCommentElement() {
+  bigPictureModal.querySelector('.social__comment-count').classList.add('hidden');
+  bigPictureModal.querySelector('.comments-loader').classList.add('hidden');
+}
+
+function fillBigPicture(picture) {
+  bigPictureModal.querySelector('.big-picture__img img').src = picture.url;
+  bigPictureModal.querySelector('.likes-count').textContent = picture.likes;
+  bigPictureModal.querySelector('.comments-count').textContent = picture.comments.length;
+  bigPictureModal.querySelector('.social__caption').textContent = picture.description;
+
+  renderComments(commentsList, createCommentsFragment(picture.comments));
+}
+
+function createCommentElement(comment) {
+  var commentElement = commentTemplate.cloneNode(true);
+
+  commentElement.querySelector('img').src = comment.avatar;
+  commentElement.querySelector('img').alt = comment.name;
+  commentElement.querySelector('.social__text').textContent = comment.message;
+
+  return commentElement;
+}
+
+function createCommentsFragment(comment) {
+  var fragment = document.createDocumentFragment();
+  var newComment;
+
+  for (var i = 0; i < comment.length; i++) {
+    newComment = createCommentElement(comment[i]);
+    fragment.appendChild(newComment);
+  }
+
+  return fragment;
+}
+
+function renderComments(list, fragment) {
+  list.innerHTML = '';
+  list.appendChild(fragment);
+}
+
+showBigPictureModal();

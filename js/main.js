@@ -1,7 +1,7 @@
 'use strict';
 
-// Количество постов
-var POST_COUNT = 25;
+// Количество фото
+var PICTURES_COUNT = 25;
 
 // Массив имен
 var USERS = [
@@ -32,7 +32,7 @@ var USERS = [
   'Трисс'
 ];
 
-// Массив комментариев
+// Массив комментариев от пользователей
 var COMMENTS = [
   'Всё отлично!',
   'В целом всё неплохо. Но не всё.',
@@ -42,8 +42,8 @@ var COMMENTS = [
   'Лица у людей на фотке перекошены, как будто их избивают. Как можно было поймать такой неудачный момент?!'
 ];
 
-// Массив подписи к фото
-var PHOTO_CAPTION = [
+// Массив подписи к фото от автора
+var PICTURE_CAPTION = [
   'Отдых это хорошо: все знают, и кто ты, а кто нет. И знаешь, что нужно делать.',
   'И что на нем написано, в этой твоей Вселенной? «Золото Дола»? «Медалей»? «Пурпурного галстука»?',
   'Какой предел продуктивной паранойи может быть у железного человека? Да ещё в мирное время?',
@@ -71,8 +71,9 @@ var PHOTO_CAPTION = [
   'Не столь важно, как медленно ты идешь, как то, как долго ты идешь, не останавливаясь.',
 ];
 
-// var simulatedListPost = document.querySelector('.pictures');
-// var postTemplate = document.querySelector('#picture').content.querySelector('.picture');
+var picturesList = [];
+var usersPictures = document.querySelector('.pictures');
+var pictureTemplate = document.querySelector('#picture').content.querySelector('.picture');
 
 // Рандомное число из промежутка или рандомное число
 function getRandomInt(min, max) {
@@ -88,8 +89,9 @@ function getRandomElement(arr) {
   return arr[getRandomInt(arr.length)];
 }
 
-function getMessage() {
+function getComment() {
   var index = getRandomInt(0, 1);
+
   if (index % 2 === 0) {
     return getRandomElement(COMMENTS) + ' ' + getRandomElement(COMMENTS);
   }
@@ -102,7 +104,7 @@ function createUserComment() {
 
   var comment = {
     avatar: 'img/avatar-' + avatarIndex + '.svg',
-    message: getMessage(),
+    message: getComment(),
     name: getRandomElement(USERS),
   };
 
@@ -120,23 +122,47 @@ function createCommentsArray() {
   return comments;
 }
 
-function createPhotoDesc(photoIndex) {
-  var photoDesc = {
+function createPictureDesc(photoIndex) {
+  var pictureDesc = {
     url: 'photos/' + photoIndex + '.jpg',
-    description: getRandomElement(PHOTO_CAPTION),
+    description: getRandomElement(PICTURE_CAPTION),
     likes: getRandomInt(15, 200),
     comments: createCommentsArray(),
   };
 
-  return photoDesc;
+  return pictureDesc;
 }
 
-function createPhotosArray() {
-  var photoArray = [];
+function createPicturesArray(count) {
+  var picturesArray = [];
 
-  for (var i = 0; i < POST_COUNT; i++) {
-    photoArray.push(createPhotoDesc(i + 1));
+  for (var i = 0; i < count; i++) {
+    picturesArray.push(createPictureDesc(i + 1));
   }
 
-  return photoArray;
+  return picturesArray;
 }
+
+function createPictureElement(picture) {
+  var pictureElement = pictureTemplate.cloneNode(true);
+
+  pictureElement.querySelector('.picture__img').src = picture.url;
+  pictureElement.querySelector('.picture__img').alt = picture.description;
+  pictureElement.querySelector('.picture__likes').textContent = picture.likes;
+  pictureElement.querySelector('.picture__comments').textContent = picture.comments.length;
+
+  return pictureElement;
+}
+
+function addToFragment(elements) {
+  var fragment = document.createDocumentFragment();
+
+  for (var i = 0; i < elements.length; i++) {
+    fragment.appendChild(createPictureElement(elements[i]));
+  }
+
+  return fragment;
+}
+
+picturesList = createPicturesArray(PICTURES_COUNT);
+usersPictures.appendChild(addToFragment(picturesList));

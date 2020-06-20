@@ -87,3 +87,26 @@ function getRandomInt(min, max) {
 function getRandomElement(arr) {
   return arr[getRandomInt(arr.length)];
 }
+
+function createUserComment() {
+  var avatarIndex = getRandomInt(1, 6);
+
+  var comment = {
+    avatar: 'img/avatar-' + avatarIndex + '.svg',
+    message: getRandomElement(PHOTO_CAPTION),
+    name: getRandomElement(USERS),
+  };
+
+  return comment;
+}
+
+function createCommentArray() {
+  var commentsCount = getRandomInt(0, 17);
+  var comments = [];
+
+  for (var i = 0; i <= commentsCount; i++) {
+    comments.push(createUserComment());
+  }
+
+  return comments;
+}

@@ -1,7 +1,7 @@
 'use strict';
 
 // Количество постов
-var NUMBER_SIMILAR_POST = 25;
+var POST_COUNT = 25;
 
 // Массив имен
 var USERS = [
@@ -71,8 +71,8 @@ var PHOTO_CAPTION = [
   'Не столь важно, как медленно ты идешь, как то, как долго ты идешь, не останавливаясь.',
 ];
 
-var simulatedListPost = document.querySelector('.pictures');
-var postTemplate = document.querySelector('#picture').content.querySelector('.picture');
+// var simulatedListPost = document.querySelector('.pictures');
+// var postTemplate = document.querySelector('#picture').content.querySelector('.picture');
 
 // Рандомное число из промежутка или рандомное число
 function getRandomInt(min, max) {
@@ -88,19 +88,28 @@ function getRandomElement(arr) {
   return arr[getRandomInt(arr.length)];
 }
 
+function getMessage() {
+  var index = getRandomInt(0, 1);
+  if (index % 2 === 0) {
+    return getRandomElement(COMMENTS) + ' ' + getRandomElement(COMMENTS);
+  }
+
+  return getRandomElement(COMMENTS);
+}
+
 function createUserComment() {
   var avatarIndex = getRandomInt(1, 6);
 
   var comment = {
     avatar: 'img/avatar-' + avatarIndex + '.svg',
-    message: getRandomElement(PHOTO_CAPTION),
+    message: getMessage(),
     name: getRandomElement(USERS),
   };
 
   return comment;
 }
 
-function createCommentArray() {
+function createCommentsArray() {
   var commentsCount = getRandomInt(0, 17);
   var comments = [];
 
@@ -109,4 +118,25 @@ function createCommentArray() {
   }
 
   return comments;
+}
+
+function createPhotoDesc(photoIndex) {
+  var photoDesc = {
+    url: 'photos/' + photoIndex + '.jpg',
+    description: getRandomElement(PHOTO_CAPTION),
+    likes: getRandomInt(15, 200),
+    comments: createCommentsArray(),
+  };
+
+  return photoDesc;
+}
+
+function createPhotosArray() {
+  var photoArray = [];
+
+  for (var i = 0; i < POST_COUNT; i++) {
+    photoArray.push(createPhotoDesc(i + 1));
+  }
+
+  return photoArray;
 }

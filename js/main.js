@@ -71,9 +71,19 @@ var PICTURE_CAPTION = [
   'Не столь важно, как медленно ты идешь, как то, как долго ты идешь, не останавливаясь.',
 ];
 
-var picturesList = [];
-var usersPictures = document.querySelector('.pictures');
+// Для работы с модальным окном фотографии
+var bigPictureModal = document.querySelector('.big-picture');
+var commentsList = bigPictureModal.querySelector('.social__comments');
+var commentTemplate = bigPictureModal.querySelector('.social__comment');
+
+// Для работы с фотографиями на главной странице
+var picturesContainer = document.querySelector('.pictures');
 var pictureTemplate = document.querySelector('#picture').content.querySelector('.picture');
+var usersPictures; // Здесь будет коллекция фотографий пользователей
+
+
+// Массив с сгенерированными фото для главной страницы
+var picturesList = createPicturesArray(PICTURES_COUNT);
 
 // Рандомное число из промежутка или рандомное число
 function getRandomInt(min, max) {
@@ -89,31 +99,47 @@ function getRandomElement(arr) {
   return arr[getRandomInt(arr.length)];
 }
 
-function getComment() {
+// Добавляет в фрагмент элементы для последующего вывода на страницу
+function addToFragment(elements, callback) {
+  var fragment = document.createDocumentFragment();
+
+  elements.forEach(function (element) {
+    fragment.appendChild(callback(element));
+  });
+
+  return fragment;
+}
+
+// Рандомно склеивает комментарии
+function getRandomMessage(arr) {
   var index = getRandomInt(0, 1);
 
   if (index % 2 === 0) {
-    return getRandomElement(COMMENTS) + ' ' + getRandomElement(COMMENTS);
+    return getRandomElement(arr) + ' ' + getRandomElement(arr);
   }
 
-  return getRandomElement(COMMENTS);
+  return getRandomElement(arr);
 }
 
+// Создает пользовательский комментарий
 function createUserComment() {
-  var avatarIndex = getRandomInt(1, 6);
+  var index = getRandomInt(1, 6);
 
   var comment = {
-    avatar: 'img/avatar-' + avatarIndex + '.svg',
-    message: getComment(),
+    avatar: 'img/avatar-' + index + '.svg',
+    message: getRandomMessage(COMMENTS),
     name: getRandomElement(USERS),
   };
 
   return comment;
 }
 
+// Создает массив с комментариями к одному фото
 function createCommentsArray() {
-  var commentsCount = getRandomInt(0, 17);
   var comments = [];
+  var minComments = 0;
+  var maxComments = 17;
+  var commentsCount = getRandomInt(minComments, maxComments);
 
   for (var i = 0; i <= commentsCount; i++) {
     comments.push(createUserComment());
@@ -122,27 +148,33 @@ function createCommentsArray() {
   return comments;
 }
 
-function createPictureDesc(photoIndex) {
+// Создает пользовательское фото
+function createPictureDesc(index, descriptions) {
+  var minLikes = 15;
+  var maxLikes = 200;
+
   var pictureDesc = {
-    url: 'photos/' + photoIndex + '.jpg',
-    description: getRandomElement(PICTURE_CAPTION),
-    likes: getRandomInt(15, 200),
+    url: 'photos/' + index + '.jpg',
+    description: getRandomElement(descriptions),
+    likes: getRandomInt(minLikes, maxLikes),
     comments: createCommentsArray(),
   };
 
   return pictureDesc;
 }
 
+// Создает массив фотографий пользователей
 function createPicturesArray(count) {
   var picturesArray = [];
 
   for (var i = 0; i < count; i++) {
-    picturesArray.push(createPictureDesc(i + 1));
+    picturesArray.push(createPictureDesc(i + 1, PICTURE_CAPTION));
   }
 
   return picturesArray;
 }
 
+// Клонирует шаблон фото и заполняет его
 function createPictureElement(picture) {
   var pictureElement = pictureTemplate.cloneNode(true);
 
@@ -154,72 +186,61 @@ function createPictureElement(picture) {
   return pictureElement;
 }
 
-function addToFragment(elements) {
-  var fragment = document.createDocumentFragment();
-
-  for (var i = 0; i < elements.length; i++) {
-    fragment.appendChild(createPictureElement(elements[i]));
-  }
-
-  return fragment;
-}
-
-picturesList = createPicturesArray(PICTURES_COUNT);
-usersPictures.appendChild(addToFragment(picturesList));
+picturesContainer.appendChild(addToFragment(picturesList, createPictureElement));
 
 /* ================================================================================= */
 
-var bigPictureModal = document.querySelector('.big-picture');
-var commentsList = bigPictureModal.querySelector('.social__comments');
-var commentTemplate = bigPictureModal.querySelector('.social__comment');
+// Коллекция пользовательских фотографий
+// записывем после генерации их на странице
+usersPictures = picturesContainer.querySelectorAll('.picture');
 
-function showBigPictureModal() {
-  bigPictureModal.classList.remove('hidden');
-  document.body.classList.add('modal-open');
-
-  hideCommentElement();
-  fillBigPicture(picturesList[0]);
-}
-
-function hideCommentElement() {
+// Временно скрывает информационные элементы
+function hideControlElement() {
   bigPictureModal.querySelector('.social__comment-count').classList.add('hidden');
   bigPictureModal.querySelector('.comments-loader').classList.add('hidden');
 }
 
+// Заполняем поле с комментарием
+function createCommentElement(commentator) {
+  var commentElement = commentTemplate.cloneNode(true);
+
+  commentElement.querySelector('img').src = commentator.avatar;
+  commentElement.querySelector('img').alt = commentator.name;
+  commentElement.querySelector('.social__text').textContent = commentator.message;
+
+  return commentElement;
+}
+
+// Выполняет сброс и вставляет новые комментарии из фрагмента
+function renderComments(list, fragment) {
+  list.innerHTML = '';
+  list.appendChild(fragment);
+}
+
+// Заполняем поля модального окна фотографии
 function fillBigPicture(picture) {
   bigPictureModal.querySelector('.big-picture__img img').src = picture.url;
   bigPictureModal.querySelector('.likes-count').textContent = picture.likes;
   bigPictureModal.querySelector('.comments-count').textContent = picture.comments.length;
   bigPictureModal.querySelector('.social__caption').textContent = picture.description;
 
-  renderComments(commentsList, createCommentsFragment(picture.comments));
+  renderComments(commentsList, addToFragment(picture.comments, createCommentElement));
 }
 
-function createCommentElement(comment) {
-  var commentElement = commentTemplate.cloneNode(true);
+/* ================================================================================= */
 
-  commentElement.querySelector('img').src = comment.avatar;
-  commentElement.querySelector('img').alt = comment.name;
-  commentElement.querySelector('.social__text').textContent = comment.message;
+// Открытие модального окна
+function showBigPictureModal(element) {
+  bigPictureModal.classList.remove('hidden');
+  document.body.classList.add('modal-open');
 
-  return commentElement;
+  hideControlElement();
+  fillBigPicture(element);
 }
 
-function createCommentsFragment(comment) {
-  var fragment = document.createDocumentFragment();
-  var newComment;
-
-  for (var i = 0; i < comment.length; i++) {
-    newComment = createCommentElement(comment[i]);
-    fragment.appendChild(newComment);
-  }
-
-  return fragment;
-}
-
-function renderComments(list, fragment) {
-  list.innerHTML = '';
-  list.appendChild(fragment);
-}
-
-showBigPictureModal();
+// Обработчик открытия для каждой фотографии
+usersPictures.forEach(function (element, index) {
+  element.addEventListener('click', function () {
+    showBigPictureModal(picturesList[index]);
+  });
+});

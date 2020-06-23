@@ -73,8 +73,14 @@ var PICTURE_CAPTION = [
 
 // Для работы с модальным окном фотографии
 var bigPictureModal = document.querySelector('.big-picture');
+var bigPictureClose = document.querySelector('#picture-cancel');
 var commentsList = bigPictureModal.querySelector('.social__comments');
 var commentTemplate = bigPictureModal.querySelector('.social__comment');
+
+// Работа с загрузкой фотографий
+var pictureUploadInput = document.querySelector('#upload-file');
+var pictureEditModal = document.querySelector('.img-upload__overlay');
+var pictureEditClose = document.querySelector('#upload-cancel');
 
 // Для работы с фотографиями на главной странице
 var picturesContainer = document.querySelector('.pictures');
@@ -101,13 +107,17 @@ function getRandomElement(arr) {
 
 // Добавляет в фрагмент элементы для последующего вывода на страницу
 function addToFragment(elements, callback) {
-  var fragment = document.createDocumentFragment();
+  if (callback && typeof callback === 'function') {
+    var fragment = document.createDocumentFragment();
 
-  elements.forEach(function (element) {
-    fragment.appendChild(callback(element));
-  });
+    elements.forEach(function (element) {
+      fragment.appendChild(callback(element));
+    });
 
-  return fragment;
+    return fragment;
+  }
+
+  return null;
 }
 
 // Рандомно склеивает комментарии
@@ -230,17 +240,58 @@ function fillBigPicture(picture) {
 /* ================================================================================= */
 
 // Открытие модального окна
-function showBigPictureModal(element) {
-  bigPictureModal.classList.remove('hidden');
+function showModal(node) {
+  node.classList.remove('hidden');
   document.body.classList.add('modal-open');
+  node.classList.add('active-popup'); // Добавляет класс активного окна для закрытия по Esc
+  document.addEventListener('keydown', onModalEscPress);
+  node.setAttribute('tabIndex', '0');
+  node.focus();
+}
 
-  hideControlElement();
-  fillBigPicture(element);
+// Закрытие модального окна
+function closeModal() {
+  var node = document.querySelector('.active-popup');
+
+  node.classList.add('hidden');
+  document.body.classList.remove('modal-open');
+  node.classList.remove('active-popup');
+  document.removeEventListener('keydown', onModalEscPress);
+  node.removeAttribute('tabIndex');
+}
+
+// Нажатие на Esc закрывает окно
+function onModalEscPress(evt) {
+  if (evt.key === 'Escape') {
+    evt.preventDefault();
+    closeModal();
+  }
 }
 
 // Обработчик открытия для каждой фотографии
+// 25 обработчиков :(
 usersPictures.forEach(function (element, index) {
-  element.addEventListener('click', function () {
-    showBigPictureModal(picturesList[index]);
+  element.addEventListener('click', function (evt) {
+    evt.preventDefault();
+    hideControlElement();
+    fillBigPicture(picturesList[index]);
+    showModal(bigPictureModal);
   });
+});
+
+// Обработчик закрытия модального окна
+bigPictureClose.addEventListener('click', function (evt) {
+  evt.preventDefault();
+  closeModal();
+});
+
+// Обработчик открытия редактирования фото
+pictureUploadInput.addEventListener('change', function () {
+  showModal(pictureEditModal);
+});
+
+// Обработчик закрытия модального окна
+pictureEditClose.addEventListener('click', function (evt) {
+  evt.preventDefault();
+  closeModal();
 });

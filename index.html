@@ -41,10 +41,11 @@
             Загрузка фотографии
           </h2>
           <form class="img-upload__form" id="upload-select-image" method="post" enctype="multipart/form-data"
-            autocomplete="off">
+            autocomplete="off" action="https://javascript.pages.academy/kekstagram">
             <!-- Изначальное состояние поля для загрузки изображения -->
             <fieldset class="img-upload__start">
-              <input type="file" id="upload-file" class="img-upload__input visually-hidden" name="filename" required />
+              <input type="file" id="upload-file" class="img-upload__input visually-hidden" accept=".png, .jpg, .jpeg"
+                name="filename" required />
               <label for="upload-file" class="img-upload__label img-upload__control">Загрузить</label>
             </fieldset>
 

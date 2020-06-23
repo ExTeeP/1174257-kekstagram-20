@@ -279,7 +279,7 @@ usersPictures.forEach(function (element, index) {
   });
 });
 
-// Обработчик закрытия модального окна
+// Обработчик закрытия модального окна фотографии
 bigPictureClose.addEventListener('click', function (evt) {
   evt.preventDefault();
   closeModal();
@@ -290,8 +290,9 @@ pictureUploadInput.addEventListener('change', function () {
   showModal(pictureEditModal);
 });
 
-// Обработчик закрытия модального окна
+// Обработчик закрытия модального окна редактирования фотографии
 pictureEditClose.addEventListener('click', function (evt) {
   evt.preventDefault();
+  pictureUploadInput.value = '';
   closeModal();
 });

@@ -78,8 +78,9 @@ var commentsList = bigPictureModal.querySelector('.social__comments');
 var commentTemplate = bigPictureModal.querySelector('.social__comment');
 
 // Работа с загрузкой фотографий
-var pictureUploadInput = document.querySelector('#upload-file');
 var pictureEditModal = document.querySelector('.img-upload__overlay');
+var picturePreview = pictureEditModal.querySelector('.img-upload__preview');
+var pictureUploadInput = document.querySelector('#upload-file');
 var pictureEditClose = document.querySelector('#upload-cancel');
 
 // Для работы с фотографиями на главной странице
@@ -288,6 +289,7 @@ bigPictureClose.addEventListener('click', function (evt) {
 // Обработчик открытия редактирования фото
 pictureUploadInput.addEventListener('change', function () {
   showModal(pictureEditModal);
+  sourceEffect();
 });
 
 // Обработчик закрытия модального окна редактирования фотографии
@@ -296,3 +298,90 @@ pictureEditClose.addEventListener('click', function (evt) {
   pictureUploadInput.value = '';
   closeModal();
 });
+
+/* ================================================================================= */
+
+// Контролы насыщенности
+var saturationControlSet = pictureEditModal.querySelector('.effect-level');
+var saturationPin = pictureEditModal.querySelector('.effect-level__pin');
+var saturationValue = pictureEditModal.querySelector('.effect-level__value');
+var saturationLine = pictureEditModal.querySelector('.effect-level__line');
+var saturationLineDepth = pictureEditModal.querySelector('.effect-level__depth');
+
+function getSaturationValue() {
+  var lineWidth = saturationLine.offsetWidth;
+  var pinPosition = saturationPin.offsetLeft;
+  var pinStep = lineWidth / 100;
+  var percent = Math.round(pinPosition / pinStep);
+
+  saturationValue.value = percent;
+  saturationPin.style.left = percent + '%';
+  saturationLineDepth.style.width = percent + '%';
+
+  return percent;
+}
+
+// Скрыть блок с управлением насыщенности фильтра
+function hideSaturationControls() {
+  saturationControlSet.classList.add('hidden');
+}
+
+// Показать блок
+function showSaturationControls() {
+  saturationControlSet.classList.remove('hidden');
+}
+
+// Создает массив из текущего класса для сравнения и удаления наложенного фильтра
+function removeEffect() {
+  var classes = Array.from(picturePreview.classList);
+
+  classes.forEach(function (element) {
+    if (element.match('effects__preview--')) {
+      picturePreview.classList.remove(element);
+    }
+  });
+}
+
+// Сбрасывает предыдущий эффект и накладывает новый
+function applyEffect(style) {
+  removeEffect();
+  showSaturationControls();
+  picturePreview.classList.add(style);
+}
+
+// Возвращает к оригинальному эффекту
+function sourceEffect() {
+  removeEffect();
+  hideSaturationControls();
+  picturePreview.classList.add('effects__preview--none');
+}
+
+// Переключатель между классами
+function onEffectPreviewClick(evt) {
+  switch (evt.target.id) {
+    case 'effect-none':
+      sourceEffect();
+      break;
+    case 'effect-chrome':
+      applyEffect('effects__preview--chrome');
+      break;
+    case 'effect-sepia':
+      applyEffect('effects__preview--sepia');
+      break;
+    case 'effect-marvin':
+      applyEffect('effects__preview--marvin');
+      break;
+    case 'effect-phobos':
+      applyEffect('effects__preview--phobos');
+      break;
+    case 'effect-heat':
+      applyEffect('effects__preview--heat');
+      break;
+  }
+}
+
+// Эффекты изображений
+var pictureEffectList = pictureEditModal.querySelector('.effects__list');
+
+// Благодаря делегированию перехватывает input radio id
+pictureEffectList.addEventListener('click', onEffectPreviewClick);

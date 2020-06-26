@@ -3,6 +3,11 @@
 // Количество фото
 var PICTURES_COUNT = 25;
 
+// Переменные для изменения масштаба
+var SCALE_STEP = 25;
+var SCALE_MIN = 25;
+var SCALE_MAX = 100;
+
 // Массив имен
 var USERS = [
   'Александр',
@@ -79,7 +84,7 @@ var commentTemplate = bigPictureModal.querySelector('.social__comment');
 
 // Работа с загрузкой фотографий
 var pictureEditModal = document.querySelector('.img-upload__overlay');
-var picturePreview = pictureEditModal.querySelector('.img-upload__preview');
+var picturePreview = pictureEditModal.querySelector('.img-upload__preview img');
 var pictureUploadInput = document.querySelector('#upload-file');
 var pictureEditClose = document.querySelector('#upload-cancel');
 
@@ -261,6 +266,11 @@ function closeModal() {
   node.removeAttribute('tabIndex');
 }
 
+// Сброс значения инпута загрузки при закрытии окна редактирования фото
+function resetUploadImage() {
+  pictureUploadInput.value = '';
+}
+
 // Нажатие на Esc закрывает окно
 function onModalEscPress(evt) {
   if (evt.key === 'Escape') {
@@ -289,14 +299,21 @@ bigPictureClose.addEventListener('click', function (evt) {
 // Обработчик открытия редактирования фото
 pictureUploadInput.addEventListener('change', function () {
   showModal(pictureEditModal);
-  sourceEffect();
+  setSourceEffect();
+  setSourceScale();
+
+  scaleIncrease.addEventListener('click', onScaleIncreaseClick);
+  scaleDecrease.addEventListener('click', onScaleDecreaseClick);
 });
 
 // Обработчик закрытия модального окна редактирования фотографии
 pictureEditClose.addEventListener('click', function (evt) {
   evt.preventDefault();
-  pictureUploadInput.value = '';
+  resetUploadImage();
   closeModal();
+
+  scaleIncrease.removeEventListener('click', onScaleIncreaseClick);
+  scaleDecrease.removeEventListener('click', onScaleDecreaseClick);
 });
 
 /* ================================================================================= */
@@ -326,12 +343,12 @@ function hideSaturationControls() {
   saturationControlSet.classList.add('hidden');
 }
 
-// Показать блок
+// Показать блок с управлением насыщенности фильтра
 function showSaturationControls() {
   saturationControlSet.classList.remove('hidden');
 }
 
-// Создает массив из текущего класса для сравнения и удаления наложенного фильтра
+// Создает массив из классов узла для сравнения и удаления наложенного фильтра
 function removeEffect() {
   var classes = Array.from(picturePreview.classList);
 
@@ -350,7 +367,7 @@ function applyEffect(style) {
 }
 
 // Возвращает к оригинальному эффекту
-function sourceEffect() {
+function setSourceEffect() {
   removeEffect();
   hideSaturationControls();
   picturePreview.classList.add('effects__preview--none');
@@ -360,7 +377,7 @@ function sourceEffect() {
 function onEffectPreviewClick(evt) {
   switch (evt.target.id) {
     case 'effect-none':
-      sourceEffect();
+      setSourceEffect();
       break;
     case 'effect-chrome':
       applyEffect('effects__preview--chrome');
@@ -385,3 +402,48 @@ var pictureEffectList = pictureEditModal.querySelector('.effects__list');
 
 // Благодаря делегированию перехватывает input radio id
 pictureEffectList.addEventListener('click', onEffectPreviewClick);
+
+// при отпускании передает позицию ползунка
+saturationPin.addEventListener('mouseup', function () {
+  getSaturationValue();
+});
+
+/* ================================================================================= */
+
+// Контроллы масштаба
+var scaleIncrease = pictureEditModal.querySelector('.scale__control--bigger');
+var scaleDecrease = pictureEditModal.querySelector('.scale__control--smaller');
+var scaleValue = pictureEditModal.querySelector('.scale__control--value');
+
+// Парсит значение масштаба фотографии в число
+function getValue() {
+  return parseInt(scaleValue.value, 10);
+}
+
+// Устанавливает значение масштаба по умолчанию
+function setSourceScale() {
+  scaleValue.value = SCALE_MAX + '%';
+  picturePreview.style.transform = 'scale(' + (SCALE_MAX / 100) + ')';
+}
+
+// При клике увеличивает масштаб фото
+function onScaleIncreaseClick() {
+  var value = getValue();
+
+  if (value < SCALE_MAX) {
+    value += SCALE_STEP;
+    picturePreview.style.transform = 'scale(' + (value / 100) + ')';
+    scaleValue.value = value + '%';
+  }
+}
+
+// При клике уменьшает масштаб фото
+function onScaleDecreaseClick() {
+  var value = getValue();
+
+  if (value > SCALE_MIN) {
+    value -= SCALE_STEP;
+    picturePreview.style.transform = 'scale(' + (value / 100) + ')';
+    scaleValue.value = value + '%';
+  }
+}

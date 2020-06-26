@@ -8,6 +8,9 @@ var SCALE_STEP = 25;
 var SCALE_MIN = 25;
 var SCALE_MAX = 100;
 
+// Максимальное колличество символов в описании к фото
+var MAX_LENGTH_DESC = 140;
+
 // Массив имен
 var USERS = [
   'Александр',
@@ -76,7 +79,12 @@ var PICTURE_CAPTION = [
   'Не столь важно, как медленно ты идешь, как то, как долго ты идешь, не останавливаясь.',
 ];
 
-// Для работы с модальным окном фотографии
+// Для работы с фотографиями на главной странице
+var picturesContainer = document.querySelector('.pictures');
+var pictureTemplate = document.querySelector('#picture').content.querySelector('.picture');
+var usersPictures; // Здесь будет коллекция фотографий пользователей
+
+// Для работы с модальным окном фотографии из превью главной страницы
 var bigPictureModal = document.querySelector('.big-picture');
 var bigPictureClose = document.querySelector('#picture-cancel');
 var commentsList = bigPictureModal.querySelector('.social__comments');
@@ -84,15 +92,27 @@ var commentTemplate = bigPictureModal.querySelector('.social__comment');
 
 // Работа с загрузкой фотографий
 var pictureEditModal = document.querySelector('.img-upload__overlay');
-var picturePreview = pictureEditModal.querySelector('.img-upload__preview img');
 var pictureUploadInput = document.querySelector('#upload-file');
 var pictureEditClose = document.querySelector('#upload-cancel');
+var picturePreview = pictureEditModal.querySelector('.img-upload__preview img');
 
-// Для работы с фотографиями на главной странице
-var picturesContainer = document.querySelector('.pictures');
-var pictureTemplate = document.querySelector('#picture').content.querySelector('.picture');
-var usersPictures; // Здесь будет коллекция фотографий пользователей
+// Контроллы масштаба
+var scaleIncrease = pictureEditModal.querySelector('.scale__control--bigger');
+var scaleDecrease = pictureEditModal.querySelector('.scale__control--smaller');
+var scaleValue = pictureEditModal.querySelector('.scale__control--value');
 
+// Эффекты изображений
+var pictureEffectList = pictureEditModal.querySelector('.effects__list');
+
+// Контролы насыщенности
+var saturationControlSet = pictureEditModal.querySelector('.effect-level');
+var saturationPin = pictureEditModal.querySelector('.effect-level__pin');
+var saturationValue = pictureEditModal.querySelector('.effect-level__value');
+var saturationLine = pictureEditModal.querySelector('.effect-level__line');
+var saturationLineDepth = pictureEditModal.querySelector('.effect-level__depth');
+
+// Поле описания фотографии
+var pictureDescription = pictureEditModal.querySelector('.text__description');
 
 // Массив с сгенерированными фото для главной страницы
 var picturesList = createPicturesArray(PICTURES_COUNT);
@@ -304,6 +324,8 @@ pictureUploadInput.addEventListener('change', function () {
 
   scaleIncrease.addEventListener('click', onScaleIncreaseClick);
   scaleDecrease.addEventListener('click', onScaleDecreaseClick);
+  pictureEffectList.addEventListener('click', onEffectPreviewClick);
+  pictureDescription.addEventListener('change', onPicteruDescriptionChange);
 });
 
 // Обработчик закрытия модального окна редактирования фотографии
@@ -314,17 +336,13 @@ pictureEditClose.addEventListener('click', function (evt) {
 
   scaleIncrease.removeEventListener('click', onScaleIncreaseClick);
   scaleDecrease.removeEventListener('click', onScaleDecreaseClick);
+  pictureEffectList.removeEventListener('click', onEffectPreviewClick);
+  pictureDescription.removeEventListener('change', onPicteruDescriptionChange);
 });
 
 /* ================================================================================= */
 
-// Контролы насыщенности
-var saturationControlSet = pictureEditModal.querySelector('.effect-level');
-var saturationPin = pictureEditModal.querySelector('.effect-level__pin');
-var saturationValue = pictureEditModal.querySelector('.effect-level__value');
-var saturationLine = pictureEditModal.querySelector('.effect-level__line');
-var saturationLineDepth = pictureEditModal.querySelector('.effect-level__depth');
-
+// Передаёт положение бегунка и заполняет связанные поля
 function getSaturationValue() {
   var lineWidth = saturationLine.offsetWidth;
   var pinPosition = saturationPin.offsetLeft;
@@ -397,25 +415,14 @@ function onEffectPreviewClick(evt) {
   }
 }
 
-// Эффекты изображений
-var pictureEffectList = pictureEditModal.querySelector('.effects__list');
-
-// Благодаря делегированию перехватывает input radio id
-pictureEffectList.addEventListener('click', onEffectPreviewClick);
-
-// при отпускании передает позицию ползунка
+// При отпускании передает позицию ползунка
 saturationPin.addEventListener('mouseup', function () {
   getSaturationValue();
 });
 
 /* ================================================================================= */
 
-// Контроллы масштаба
-var scaleIncrease = pictureEditModal.querySelector('.scale__control--bigger');
-var scaleDecrease = pictureEditModal.querySelector('.scale__control--smaller');
-var scaleValue = pictureEditModal.querySelector('.scale__control--value');
-
-// Парсит значение масштаба фотографии в число
+// Парсит значение масштаба фотографии в число, тк в поле знацение в %
 function getValue() {
   return parseInt(scaleValue.value, 10);
 }
@@ -445,5 +452,16 @@ function onScaleDecreaseClick() {
     value -= SCALE_STEP;
     picturePreview.style.transform = 'scale(' + (value / 100) + ')';
     scaleValue.value = value + '%';
+  }
+}
+
+/* ================================================================================= */
+
+// Проверка поля на валидность
+function onPicteruDescriptionChange(evt) {
+  if (evt.target.textLength > MAX_LENGTH_DESC) {
+    evt.target.setCustomValidity('Комментарий не может быть больше 140 символов');
+  } else {
+    evt.target.setCustomValidity('');
   }
 }

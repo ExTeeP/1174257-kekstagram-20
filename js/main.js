@@ -459,7 +459,8 @@ function onScaleDecreaseClick() {
 
 // Проверка поля на валидность
 function onPicteruDescriptionChange(evt) {
-  if (evt.target.textLength > MAX_LENGTH_DESC) {
+
+  if (evt.target.textLength > MAX_LENGTH_DESC || evt.target.toLoong) {
     evt.target.setCustomValidity('Комментарий не может быть больше 140 символов');
   } else {
     evt.target.setCustomValidity('');

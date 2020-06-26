@@ -324,8 +324,12 @@ pictureUploadInput.addEventListener('change', function () {
 
   scaleIncrease.addEventListener('click', onScaleIncreaseClick);
   scaleDecrease.addEventListener('click', onScaleDecreaseClick);
+
   pictureEffectList.addEventListener('click', onEffectPreviewClick);
+
   pictureDescription.addEventListener('change', onPicteruDescriptionChange);
+  pictureDescription.addEventListener('focus', onPicteruDescriptionFocus);
+  pictureDescription.addEventListener('blur', onPictureDescriptionBlur);
 });
 
 // Обработчик закрытия модального окна редактирования фотографии
@@ -336,8 +340,12 @@ pictureEditClose.addEventListener('click', function (evt) {
 
   scaleIncrease.removeEventListener('click', onScaleIncreaseClick);
   scaleDecrease.removeEventListener('click', onScaleDecreaseClick);
+
   pictureEffectList.removeEventListener('click', onEffectPreviewClick);
+
   pictureDescription.removeEventListener('change', onPicteruDescriptionChange);
+  pictureDescription.removeEventListener('focus', onPicteruDescriptionFocus);
+  pictureDescription.removeEventListener('blur', onPictureDescriptionBlur);
 });
 
 /* ================================================================================= */
@@ -368,9 +376,7 @@ function showSaturationControls() {
 
 // Создает массив из классов узла для сравнения и удаления наложенного фильтра
 function removeEffect() {
-  var classes = Array.from(picturePreview.classList);
-
-  classes.forEach(function (element) {
+  Array.from(picturePreview.classList, function (element) {
     if (element.match('effects__preview--')) {
       picturePreview.classList.remove(element);
     }
@@ -466,3 +472,15 @@ function onPicteruDescriptionChange(evt) {
     evt.target.setCustomValidity('');
   }
 }
+
+// Когда поле в фокусе закрыть попап нельзя
+function onPicteruDescriptionFocus() {
+  document.removeEventListener('keydown', onModalEscPress);
+}
+
+// Когда поле теряет фокус, его можно закрыть
+function onPictureDescriptionBlur() {
+  document.addEventListener('keydown', onModalEscPress);
+}
+
+/* ================================================================================= */

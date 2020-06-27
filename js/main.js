@@ -452,7 +452,7 @@ saturationPin.addEventListener('mouseup', function () {
 /* ================================================================================= */
 
 // Парсит значение масштаба фотографии в число, тк в поле знацение в %
-function getValue() {
+function getValueScale() {
   return parseInt(scaleValue.value, 10);
 }
 
@@ -464,7 +464,7 @@ function setSourceScale() {
 
 // При клике увеличивает масштаб фото
 function onScaleIncreaseClick() {
-  var value = getValue();
+  var value = getValueScale();
 
   if (value < SCALE_MAX) {
     value += SCALE_STEP;
@@ -475,7 +475,7 @@ function onScaleIncreaseClick() {
 
 // При клике уменьшает масштаб фото
 function onScaleDecreaseClick() {
-  var value = getValue();
+  var value = getValueScale();
 
   if (value > SCALE_MIN) {
     value -= SCALE_STEP;

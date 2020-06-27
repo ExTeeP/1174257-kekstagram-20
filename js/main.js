@@ -236,7 +236,7 @@ picturesContainer.appendChild(addToFragment(picturesList, createPictureElement))
 
 // Коллекция пользовательских фотографий
 // записывем после генерации их на странице
-usersPictures = picturesContainer.querySelectorAll('.picture');
+usersPictures = picturesContainer.querySelectorAll('.picture__img');
 
 // Временно скрывает информационные элементы
 function hideControlElement() {
@@ -263,12 +263,17 @@ function renderComments(list, fragment) {
 
 // Заполняем поля модального окна фотографии
 function fillBigPicture(picture) {
-  bigPictureModal.querySelector('.big-picture__img img').src = picture.url;
-  bigPictureModal.querySelector('.likes-count').textContent = picture.likes;
-  bigPictureModal.querySelector('.comments-count').textContent = picture.comments.length;
-  bigPictureModal.querySelector('.social__caption').textContent = picture.description;
+  usersPictures.forEach(function (element, index) {
 
-  renderComments(commentsList, addToFragment(picture.comments, createCommentElement));
+    if (picture === element) {
+      bigPictureModal.querySelector('.big-picture__img img').src = picturesList[index].url;
+      bigPictureModal.querySelector('.likes-count').textContent = picturesList[index].likes;
+      bigPictureModal.querySelector('.comments-count').textContent = picturesList[index].comments.length;
+      bigPictureModal.querySelector('.social__caption').textContent = picturesList[index].description;
+
+      renderComments(commentsList, addToFragment(picturesList[index].comments, createCommentElement));
+    }
+  });
 }
 
 /* ================================================================================= */
@@ -307,15 +312,17 @@ function onModalEscPress(evt) {
   }
 }
 
-// Обработчик открытия для каждой фотографии
-// 25 обработчиков :(
-usersPictures.forEach(function (element, index) {
-  element.addEventListener('click', function (evt) {
+// Обработчик открытия модальногоокна для каждой фотографии
+picturesContainer.addEventListener('click', function (evt) {
+  var target = evt.target;
+  var picture = target.matches('.picture__img');
+
+  if (target && picture) {
     evt.preventDefault();
     hideControlElement();
-    fillBigPicture(picturesList[index]);
+    fillBigPicture(target);
     showModal(bigPictureModal);
-  });
+  }
 });
 
 // Обработчик закрытия модального окна фотографии
@@ -445,7 +452,7 @@ saturationPin.addEventListener('mouseup', function () {
 /* ================================================================================= */
 
 // Парсит значение масштаба фотографии в число, тк в поле знацение в %
-function getValue() {
+function getValueScale() {
   return parseInt(scaleValue.value, 10);
 }
 
@@ -457,7 +464,7 @@ function setSourceScale() {
 
 // При клике увеличивает масштаб фото
 function onScaleIncreaseClick() {
-  var value = getValue();
+  var value = getValueScale();
 
   if (value < SCALE_MAX) {
     value += SCALE_STEP;
@@ -468,7 +475,7 @@ function onScaleIncreaseClick() {
 
 // При клике уменьшает масштаб фото
 function onScaleDecreaseClick() {
-  var value = getValue();
+  var value = getValueScale();
 
   if (value > SCALE_MIN) {
     value -= SCALE_STEP;

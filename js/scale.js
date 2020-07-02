@@ -1,0 +1,48 @@
+'use strict';
+
+window.scale = (function () {
+
+  var pictureEditModal = document.querySelector('.img-upload__overlay');
+  var picturePreview = pictureEditModal.querySelector('.img-upload__preview img');
+  var scaleValue = pictureEditModal.querySelector('.scale__control--value');
+
+  // Парсит значение масштаба фотографии в число, тк в поле знацение в %
+  function getValueScale() {
+    return parseInt(scaleValue.value, 10);
+  }
+
+  // Устанавливает значение масштаба по умолчанию
+  function setSourceScale() {
+    scaleValue.value = window.const.SCALE_MAX + '%';
+    picturePreview.style.transform = 'scale(' + (window.const.SCALE_MAX / 100) + ')';
+  }
+
+  // При клике увеличивает масштаб фото
+  function onScaleIncreaseClick() {
+    var value = getValueScale();
+
+    if (value < window.const.SCALE_MAX) {
+      value += window.const.SCALE_STEP;
+      picturePreview.style.transform = 'scale(' + (value / 100) + ')';
+      scaleValue.value = value + '%';
+    }
+  }
+
+  // При клике уменьшает масштаб фото
+  function onScaleDecreaseClick() {
+    var value = getValueScale();
+
+    if (value > window.const.SCALE_MIN) {
+      value -= window.const.SCALE_STEP;
+      picturePreview.style.transform = 'scale(' + (value / 100) + ')';
+      scaleValue.value = value + '%';
+    }
+  }
+
+  return {
+    setSourceScale: setSourceScale,
+    onScaleIncreaseClick: onScaleIncreaseClick,
+    onScaleDecreaseClick: onScaleDecreaseClick
+  };
+
+})();

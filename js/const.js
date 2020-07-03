@@ -10,6 +10,9 @@ window.const = (function () {
   var SCALE_MIN = 25;
   var SCALE_MAX = 100;
 
+  // Насыщеность
+  var SATURATION_DEFAULT = 100;
+
   // Максимальное колличество символов в описании к фото
   var MAX_LENGTH_DESC = 140;
 
@@ -97,7 +100,8 @@ window.const = (function () {
     MAX_HASHTAG_CHARACTERS: MAX_HASHTAG_CHARACTERS,
     USERS: USERS,
     COMMENTS: COMMENTS,
-    PICTURE_CAPTION: PICTURE_CAPTION
+    PICTURE_CAPTION: PICTURE_CAPTION,
+    SATURATION_DEFAULT: SATURATION_DEFAULT
   };
 
 })();

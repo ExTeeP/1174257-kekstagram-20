@@ -15,12 +15,12 @@ window.preview = (function () {
   }
 
   // Заполняем поле с комментарием
-  function createCommentElement(commentator) {
+  function createCommentElement(objCommentator) {
     var commentElement = commentTemplate.cloneNode(true);
 
-    commentElement.querySelector('img').src = commentator.avatar;
-    commentElement.querySelector('img').alt = commentator.name;
-    commentElement.querySelector('.social__text').textContent = commentator.message;
+    commentElement.querySelector('img').src = objCommentator.avatar;
+    commentElement.querySelector('img').alt = objCommentator.name;
+    commentElement.querySelector('.social__text').textContent = objCommentator.message;
 
     return commentElement;
   }
@@ -34,14 +34,16 @@ window.preview = (function () {
   // Заполняем поля модального окна фотографии
   function fillBigPicture(picture) {
     usersPictures.forEach(function (element, index) {
-
       if (picture === element) {
-        bigPictureModal.querySelector('.big-picture__img img').src = window.gallery.picturesList[index].url;
-        bigPictureModal.querySelector('.likes-count').textContent = window.gallery.picturesList[index].likes;
-        bigPictureModal.querySelector('.comments-count').textContent = window.gallery.picturesList[index].comments.length;
-        bigPictureModal.querySelector('.social__caption').textContent = window.gallery.picturesList[index].description;
+        var objPhoto = window.gallery.picturesList[index];
+        var fragment = window.utils.addToFragment(objPhoto.comments, createCommentElement);
 
-        renderComments(commentsList, window.utils.addToFragment(window.gallery.picturesList[index].comments, createCommentElement));
+        bigPictureModal.querySelector('.big-picture__img img').src = objPhoto.url;
+        bigPictureModal.querySelector('.likes-count').textContent = objPhoto.likes;
+        bigPictureModal.querySelector('.comments-count').textContent = objPhoto.comments.length;
+        bigPictureModal.querySelector('.social__caption').textContent = objPhoto.description;
+
+        renderComments(commentsList, fragment);
       }
     });
   }

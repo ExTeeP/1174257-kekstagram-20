@@ -5,24 +5,6 @@ window.effects = (function () {
   var pictureEditModal = document.querySelector('.img-upload__overlay');
   var picturePreview = pictureEditModal.querySelector('.img-upload__preview img');
   var saturationControlSet = pictureEditModal.querySelector('.effect-level');
-  var saturationPin = pictureEditModal.querySelector('.effect-level__pin');
-  var saturationValue = pictureEditModal.querySelector('.effect-level__value');
-  var saturationLine = pictureEditModal.querySelector('.effect-level__line');
-  var saturationLineDepth = pictureEditModal.querySelector('.effect-level__depth');
-
-  // Передаёт положение бегунка и заполняет связанные поля
-  function getSaturationValue() {
-    var lineWidth = saturationLine.offsetWidth;
-    var pinPosition = saturationPin.offsetLeft;
-    var pinStep = lineWidth / 100;
-    var percent = Math.round(pinPosition / pinStep);
-
-    saturationValue.value = percent;
-    saturationPin.style.left = percent + '%';
-    saturationLineDepth.style.width = percent + '%';
-
-    return percent;
-  }
 
   // Скрыть блок с управлением насыщенности фильтра
   function hideSaturationControls() {
@@ -39,6 +21,7 @@ window.effects = (function () {
     Array.from(picturePreview.classList, function (element) {
       if (element.match('effects__preview--')) {
         picturePreview.classList.remove(element);
+        picturePreview.style.filter = '';
       }
     });
   }
@@ -47,6 +30,7 @@ window.effects = (function () {
   function applyEffect(style) {
     removeEffect();
     showSaturationControls();
+    window.saturation.setSourceSaturation();
     picturePreview.classList.add(style);
   }
 
@@ -80,11 +64,6 @@ window.effects = (function () {
         break;
     }
   }
-
-  // При отпускании передает позицию ползунка
-  saturationPin.addEventListener('mouseup', function () {
-    getSaturationValue();
-  });
 
   return {
     onEffectPreviewClick: onEffectPreviewClick,

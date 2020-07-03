@@ -16,6 +16,7 @@ window.main = (function () {
   var pictureDescription = pictureEditModal.querySelector('.text__description');
   var scaleIncrease = pictureEditModal.querySelector('.scale__control--bigger');
   var scaleDecrease = pictureEditModal.querySelector('.scale__control--smaller');
+  var saturationPin = pictureEditModal.querySelector('.effect-level__pin');
 
   // Открытие модального окна
   function showModal(node) {
@@ -85,6 +86,7 @@ window.main = (function () {
     showModal(pictureEditModal);
     window.effects.setSourceEffect();
     window.scale.setSourceScale();
+    window.saturation.setSourceSaturation();
 
     scaleIncrease.addEventListener('click', window.scale.onScaleIncreaseClick);
     scaleDecrease.addEventListener('click', window.scale.onScaleDecreaseClick);
@@ -98,6 +100,8 @@ window.main = (function () {
     pictureHashtag.addEventListener('change', window.form.onPictureHashtragChange);
     pictureHashtag.addEventListener('focus', onElementFocus);
     pictureHashtag.addEventListener('blur', onElementBlur);
+
+    saturationPin.addEventListener('mousedown', window.saturation.onSaturationPinMove);
   });
 
   // Обработчик закрытия модального окна редактирования фотографии
@@ -118,6 +122,8 @@ window.main = (function () {
     pictureHashtag.removeEventListener('change', window.form.onPictureHashtragChange);
     pictureHashtag.removeEventListener('focus', onElementFocus);
     pictureHashtag.removeEventListener('blur', onElementBlur);
+
+    saturationPin.removeEventListener('mousedown', window.saturation.onSaturationPinMove);
   });
 
 })();

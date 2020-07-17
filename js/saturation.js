@@ -2,6 +2,9 @@
 
 window.saturation = (function () {
 
+  // Насыщеность
+  var SATURATION_DEFAULT = 100;
+
   var pictureEditModal = document.querySelector('.img-upload__overlay');
   var picturePreview = pictureEditModal.querySelector('.img-upload__preview img');
   var saturationPin = pictureEditModal.querySelector('.effect-level__pin');
@@ -11,9 +14,9 @@ window.saturation = (function () {
 
   // Возвращение к заводским настройкам
   function setSourceSaturation() {
-    saturationValue.value = window.const.SATURATION_DEFAULT;
-    saturationPin.style.left = window.const.SATURATION_DEFAULT + '%';
-    saturationLineDepth.style.width = window.const.SATURATION_DEFAULT + '%';
+    saturationValue.value = SATURATION_DEFAULT;
+    saturationPin.style.left = SATURATION_DEFAULT + '%';
+    saturationLineDepth.style.width = SATURATION_DEFAULT + '%';
   }
 
   // В зависимости от класс изменяет насыщеность

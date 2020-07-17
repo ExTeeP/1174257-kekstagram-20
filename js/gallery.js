@@ -2,79 +2,35 @@
 
 window.gallery = (function () {
 
+  var PICTURES_AMOUNT = 25;
+
   // Для работы с фотографиями на главной странице
   var picturesContainer = document.querySelector('.pictures');
   var pictureTemplate = document.querySelector('#picture').content.querySelector('.picture');
 
-  // Массив с сгенерированными фото для главной страницы
-  var picturesList = createPicturesArray(window.const.PICTURES_COUNT);
-
-  // Рандомно склеивает комментарии
-  function getRandomMessage(arr) {
-    var index = window.utils.getRandomInt(0, 1);
-
-    if (index % 2 === 0) {
-      return window.utils.getRandomElement(arr) + ' ' + window.utils.getRandomElement(arr);
-    }
-
-    return window.utils.getRandomElement(arr);
-  }
-
-  // Создает пользовательский комментарий
-  function createUserComment() {
-    var index = window.utils.getRandomInt(1, 6);
-
-    var comment = {
-      avatar: 'img/avatar-' + index + '.svg',
-      message: getRandomMessage(window.const.COMMENTS),
-      name: window.utils.getRandomElement(window.const.USERS),
-    };
-
-    return comment;
-  }
-
-  // Создает массив с комментариями к одному фото
-  function createCommentsArray() {
-    var comments = [];
-    var minComments = 0;
-    var maxComments = 17;
-    var commentsCount = window.utils.getRandomInt(minComments, maxComments);
-
-    for (var i = 0; i <= commentsCount; i++) {
-      comments.push(createUserComment());
-    }
-
-    return comments;
-  }
-
   // Создает пользовательское фото
-  function createPictureDesc(index, descriptions) {
-    var minLikes = 15;
-    var maxLikes = 200;
-
-    var pictureDesc = {
-      url: 'photos/' + index + '.jpg',
-      description: window.utils.getRandomElement(descriptions),
-      likes: window.utils.getRandomInt(minLikes, maxLikes),
-      comments: createCommentsArray(),
+  function createPicture(picture) {
+    return {
+      url: picture.url,
+      description: picture.description,
+      likes: picture.likes,
+      comments: picture.comments
     };
-
-    return pictureDesc;
   }
 
   // Создает массив фотографий пользователей
-  function createPicturesArray(count) {
-    var picturesArray = [];
+  function createPicturesArray(data) {
+    var pictures = [];
 
-    for (var i = 0; i < count; i++) {
-      picturesArray.push(createPictureDesc(i + 1, window.const.PICTURE_CAPTION));
+    for (var i = 0; i < PICTURES_AMOUNT; i++) {
+      pictures.push(createPicture(data[i]));
     }
 
-    return picturesArray;
+    return pictures;
   }
 
   // Клонирует шаблон фото и заполняет его
-  function createPictureElement(picture) {
+  function fillPicture(picture) {
     var pictureElement = pictureTemplate.cloneNode(true);
 
     pictureElement.querySelector('.picture__img').src = picture.url;
@@ -85,13 +41,17 @@ window.gallery = (function () {
     return pictureElement;
   }
 
-  picturesContainer.appendChild(window.utils.addToFragment(picturesList, createPictureElement));
+  function renderPictures(data) {
+    picturesContainer.appendChild(window.utils.addToFragment(data, PICTURES_AMOUNT, fillPicture));
+  }
 
-  var usersPictures = picturesContainer.querySelectorAll('.picture__img');
+  function onLoadSuccess(data) {
+    var picturesList = createPicturesArray(data);
+    renderPictures(data);
 
-  return {
-    picturesList: picturesList,
-    usersPictures: usersPictures
-  };
+    // Экспорт массива с данными от сервера
+    window.picturesList = picturesList;
+  }
 
+  window.backend.load(onLoadSuccess);
 })();

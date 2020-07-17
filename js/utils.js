@@ -17,13 +17,13 @@ window.utils = (function () {
   }
 
   // Добавляет в фрагмент элементы для последующего вывода на страницу
-  function addToFragment(elements, callback) {
+  function addToFragment(elements, count, callback) {
     if (callback && typeof callback === 'function') {
       var fragment = document.createDocumentFragment();
 
-      elements.forEach(function (element) {
-        fragment.appendChild(callback(element));
-      });
+      for (var i = 0; i < count; i++) {
+        fragment.appendChild(callback(elements[i]));
+      }
 
       return fragment;
     }

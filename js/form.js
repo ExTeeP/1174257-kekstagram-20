@@ -2,10 +2,18 @@
 
 window.form = (function () {
 
+  // Максимальное колличество символов в описании к фото
+  var MAX_LENGTH_DESC = 140;
+
+  // Валидация хештегов
+  var HASHTAG_REGEXP = /^#[A-Za-zА-Яа-яЁё0-9]{1,19}$/;
+  var MAX_HASHTAGS = 5;
+  var MAX_HASHTAG_CHARACTERS = 20;
+
   // Проверка поля на валидность
   function onPicteruDescriptionChange(evt) {
 
-    if (evt.target.textLength > window.const.MAX_LENGTH_DESC || evt.target.toLoong) {
+    if (evt.target.textLength > MAX_LENGTH_DESC || evt.target.toLoong) {
       evt.target.setCustomValidity('Комментарий не может быть больше 140 символов');
     } else {
       evt.target.setCustomValidity('');
@@ -41,8 +49,8 @@ window.form = (function () {
   var createValidityMessages = function (notEmptyHashtags) {
     var errorMessages = [];
 
-    if (notEmptyHashtags.length > window.const.MAX_HASHTAGS) {
-      pushErrorMessage('Хеш-тегов не должно быть больше ' + window.const.MAX_HASHTAGS + ' .', errorMessages);
+    if (notEmptyHashtags.length > MAX_HASHTAGS) {
+      pushErrorMessage('Хеш-тегов не должно быть больше ' + MAX_HASHTAGS + ' .', errorMessages);
     }
 
     notEmptyHashtags.forEach(function (hashtag) {
@@ -50,9 +58,9 @@ window.form = (function () {
         pushErrorMessage('Хеш-тег должен начинаться с символа решетки (#).', errorMessages);
       } else if (hashtag.length === 1) {
         pushErrorMessage('Хеш-тег не может состоять из одного символа.', errorMessages);
-      } else if (hashtag.length > window.const.MAX_HASHTAG_CHARACTERS) {
-        pushErrorMessage('Хеш-тег не может состоять из более чем ' + window.const.MAX_HASHTAG_CHARACTERS + ' символов.', errorMessages);
-      } else if (!hashtag.match(window.const.HASHTAG_REGEXP)) {
+      } else if (hashtag.length > MAX_HASHTAG_CHARACTERS) {
+        pushErrorMessage('Хеш-тег не может состоять из более чем ' + MAX_HASHTAG_CHARACTERS + ' символов.', errorMessages);
+      } else if (!hashtag.match(HASHTAG_REGEXP)) {
         pushErrorMessage('Хеш-тег должен состоять только из букв и цифр.', errorMessages);
       } else if (notEmptyHashtags.indexOf(hashtag) !== notEmptyHashtags.lastIndexOf(hashtag)) {
         pushErrorMessage('Хеш-теги не должны повторяться.', errorMessages);

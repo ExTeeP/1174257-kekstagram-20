@@ -69,7 +69,7 @@ window.main = (function () {
 
     if (target && picture) {
       evt.preventDefault();
-      window.preview.hideControlElement();
+      // window.preview.hideControlElement();
       window.preview.fillBigPicture(target);
       showModal(bigPictureModal);
     }

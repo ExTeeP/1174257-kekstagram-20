@@ -17,6 +17,7 @@ window.main = (function () {
   var scaleIncrease = pictureEditModal.querySelector('.scale__control--bigger');
   var scaleDecrease = pictureEditModal.querySelector('.scale__control--smaller');
   var saturationPin = pictureEditModal.querySelector('.effect-level__pin');
+  var form = picturesContainer.querySelector('#upload-select-image');
 
   // Открытие модального окна
   function showModal(node) {
@@ -62,6 +63,12 @@ window.main = (function () {
     document.addEventListener('keydown', onModalEscPress);
   }
 
+  function onFormSubmit(evt) {
+    evt.preventDefault();
+    closeModal();
+    window.backend.send(new FormData(form), window.success.onSuccess, window.error.onSendError);
+  }
+
   // Обработчик открытия модального окна для каждой фотографии
   picturesContainer.addEventListener('click', function (evt) {
     var target = evt.target;
@@ -93,15 +100,17 @@ window.main = (function () {
 
     pictureEffectList.addEventListener('click', window.effects.onEffectPreviewClick);
 
-    pictureDescription.addEventListener('change', window.form.onPicteruDescriptionChange);
+    pictureDescription.addEventListener('change', window.validation.onPicteruDescriptionChange);
     pictureDescription.addEventListener('focus', onElementFocus);
     pictureDescription.addEventListener('blur', onElementBlur);
 
-    pictureHashtag.addEventListener('change', window.form.onPictureHashtragChange);
+    pictureHashtag.addEventListener('change', window.validation.onPictureHashtragChange);
     pictureHashtag.addEventListener('focus', onElementFocus);
     pictureHashtag.addEventListener('blur', onElementBlur);
 
     saturationPin.addEventListener('mousedown', window.saturation.onSaturationPinMove);
+
+    form.addEventListener('submit', onFormSubmit);
   });
 
   // Обработчик закрытия модального окна редактирования фотографии
@@ -115,15 +124,17 @@ window.main = (function () {
 
     pictureEffectList.removeEventListener('click', window.effects.onEffectPreviewClick);
 
-    pictureDescription.removeEventListener('change', window.form.onPicteruDescriptionChange);
+    pictureDescription.removeEventListener('change', window.validation.onPicteruDescriptionChange);
     pictureDescription.removeEventListener('focus', onElementFocus);
     pictureDescription.removeEventListener('blur', onElementBlur);
 
-    pictureHashtag.removeEventListener('change', window.form.onPictureHashtragChange);
+    pictureHashtag.removeEventListener('change', window.validation.onPictureHashtragChange);
     pictureHashtag.removeEventListener('focus', onElementFocus);
     pictureHashtag.removeEventListener('blur', onElementBlur);
 
     saturationPin.removeEventListener('mousedown', window.saturation.onSaturationPinMove);
+
+    form.removeEventListener('submit', onFormSubmit);
   });
 
 })();

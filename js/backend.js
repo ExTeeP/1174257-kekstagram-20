@@ -70,6 +70,6 @@ window.backend = (function () {
 
   return {
     load: load,
-    save: send
+    send: send
   };
 })();

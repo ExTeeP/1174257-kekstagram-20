@@ -1,6 +1,6 @@
 'use strict';
 
-window.form = (function () {
+window.validation = (function () {
 
   // Максимальное колличество символов в описании к фото
   var MAX_LENGTH_DESC = 140;

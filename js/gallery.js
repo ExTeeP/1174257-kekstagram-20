@@ -53,5 +53,5 @@ window.gallery = (function () {
     window.picturesList = picturesList;
   }
 
-  window.backend.load(onLoadSuccess);
+  window.backend.load(onLoadSuccess, window.error.onLoadError);
 })();

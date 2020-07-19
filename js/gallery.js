@@ -3,31 +3,11 @@
 window.gallery = (function () {
 
   var PICTURES_AMOUNT = 25;
+  var picturesData = [];
 
   // Для работы с фотографиями на главной странице
   var picturesContainer = document.querySelector('.pictures');
   var pictureTemplate = document.querySelector('#picture').content.querySelector('.picture');
-
-  // Создает пользовательское фото
-  function createPicture(picture) {
-    return {
-      url: picture.url,
-      description: picture.description,
-      likes: picture.likes,
-      comments: picture.comments
-    };
-  }
-
-  // Создает массив фотографий пользователей
-  function createPicturesArray(data) {
-    var pictures = [];
-
-    for (var i = 0; i < PICTURES_AMOUNT; i++) {
-      pictures.push(createPicture(data[i]));
-    }
-
-    return pictures;
-  }
 
   // Клонирует шаблон фото и заполняет его
   function fillPicture(picture) {
@@ -46,12 +26,14 @@ window.gallery = (function () {
   }
 
   function onLoadSuccess(data) {
-    var picturesList = createPicturesArray(data);
+    window.gallery.picturesData = data;
     renderPictures(data);
-
-    // Экспорт массива с данными от сервера
-    window.picturesList = picturesList;
   }
 
   window.backend.load(onLoadSuccess, window.error.onLoadError);
+
+  return {
+    picturesData: picturesData
+  };
+
 })();

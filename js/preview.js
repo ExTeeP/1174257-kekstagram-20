@@ -58,7 +58,7 @@ window.preview = (function () {
 
     usersPictures.forEach(function (element, index) {
       if (picture === element) {
-        var pictureObject = window.picturesList[index];
+        var pictureObject = window.gallery.picturesData[index];
         var comments = pictureObject.comments;
         var fragment = window.utils.addToFragment(comments, setCommentsAmount(comments), createCommentElement);
 

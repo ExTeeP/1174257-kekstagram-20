@@ -4,6 +4,7 @@ window.preview = (function () {
 
   var COMMENTS_AMOUNT = 5;
   var commentsDataCopy = [];
+  var showCommentCount;
 
   // Для работы с модальным окном фотографии из превью главной страницы
   var bigPictureModal = document.querySelector('.big-picture');
@@ -38,6 +39,8 @@ window.preview = (function () {
     var length = shownComments.length;
     var fragment = window.utils.addToFragment(shownComments, length, createCommentElement);
 
+    showCommentCount += length;
+    commentCount.childNodes[0].textContent = showCommentCount + ' из ';
     commentsList.appendChild(fragment);
   }
 
@@ -64,6 +67,7 @@ window.preview = (function () {
         bigPictureModal.querySelector('.comments-count').textContent = pictureObject.comments.length;
         bigPictureModal.querySelector('.social__caption').textContent = pictureObject.description;
 
+        showCommentCount = 0;
         commentsList.innerHTML = '';
         renderComments(commentsDataCopy);
 
@@ -71,8 +75,6 @@ window.preview = (function () {
           showLoadButton();
           commentLoadButton.addEventListener('click', onCommentsLoadButtonClick);
         }
-
-        commentLoadButton.addEventListener('click', onCommentsLoadButtonClick);
       }
     });
   }

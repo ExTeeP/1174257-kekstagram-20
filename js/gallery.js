@@ -30,7 +30,7 @@ window.gallery = (function () {
     renderPictures(data);
   }
 
-  window.backend.load(onLoadSuccess, window.error.onLoadError);
+  window.backend.load(onLoadSuccess, window.error.onError);
 
   return {
     picturesData: picturesData

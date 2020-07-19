@@ -6,6 +6,7 @@ window.main = (function () {
   var picturesContainer = document.querySelector('.pictures');
   var bigPictureClose = document.querySelector('#picture-cancel');
   var bigPictureModal = document.querySelector('.big-picture');
+  var commentLoadButton = bigPictureModal.querySelector('.comments-loader');
 
   // Работа с загрузкой фотографий
   var pictureEditModal = document.querySelector('.img-upload__overlay');
@@ -66,7 +67,7 @@ window.main = (function () {
   function onFormSubmit(evt) {
     evt.preventDefault();
     closeModal();
-    window.backend.send(new FormData(form), window.success.onSuccess, window.error.onSendError);
+    window.backend.send(new FormData(form), window.success.onSuccess, window.error.onError);
   }
 
   // Обработчик открытия модального окна для каждой фотографии
@@ -76,7 +77,6 @@ window.main = (function () {
 
     if (target && picture) {
       evt.preventDefault();
-      // window.preview.hideControlElement();
       window.preview.fillBigPicture(target);
       showModal(bigPictureModal);
     }
@@ -86,6 +86,8 @@ window.main = (function () {
   bigPictureClose.addEventListener('click', function (evt) {
     evt.preventDefault();
     closeModal();
+
+    commentLoadButton.removeEventListener('click', window.preview.onCommentsLoadButtonClick);
   });
 
   // Обработчик открытия редактирования фото

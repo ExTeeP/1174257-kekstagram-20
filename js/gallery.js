@@ -2,32 +2,13 @@
 
 window.gallery = (function () {
 
-  var PICTURES_AMOUNT = 25;
+  // var PICTURES_AMOUNT = 10;
+  var picturesData = [];
 
   // Для работы с фотографиями на главной странице
   var picturesContainer = document.querySelector('.pictures');
   var pictureTemplate = document.querySelector('#picture').content.querySelector('.picture');
-
-  // Создает пользовательское фото
-  function createPicture(picture) {
-    return {
-      url: picture.url,
-      description: picture.description,
-      likes: picture.likes,
-      comments: picture.comments
-    };
-  }
-
-  // Создает массив фотографий пользователей
-  function createPicturesArray(data) {
-    var pictures = [];
-
-    for (var i = 0; i < PICTURES_AMOUNT; i++) {
-      pictures.push(createPicture(data[i]));
-    }
-
-    return pictures;
-  }
+  var pictureFilters = document.querySelector('.img-filters');
 
   // Клонирует шаблон фото и заполняет его
   function fillPicture(picture) {
@@ -42,16 +23,29 @@ window.gallery = (function () {
   }
 
   function renderPictures(data) {
-    picturesContainer.appendChild(window.utils.addToFragment(data, PICTURES_AMOUNT, fillPicture));
+    picturesContainer.appendChild(window.utils.addToFragment(data, fillPicture));
   }
+
+  var removePictures = function () {
+    var shownPictures = picturesContainer.querySelectorAll('.picture');
+
+    shownPictures.forEach(function (picture) {
+      picturesContainer.removeChild(picture);
+    });
+  };
 
   function onLoadSuccess(data) {
-    var picturesList = createPicturesArray(data);
+    window.gallery.picturesData = data;
     renderPictures(data);
-
-    // Экспорт массива с данными от сервера
-    window.picturesList = picturesList;
+    pictureFilters.classList.remove('img-filters--inactive');
   }
 
-  window.backend.load(onLoadSuccess, window.error.onLoadError);
+  window.backend.load(onLoadSuccess, window.error.onError);
+
+  return {
+    picturesData: picturesData,
+    renderPictures: renderPictures,
+    removePictures: removePictures
+  };
+
 })();

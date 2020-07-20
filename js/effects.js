@@ -2,6 +2,15 @@
 
 window.effects = (function () {
 
+  var Effect = {
+    none: 'effect-none',
+    chrome: 'effect-chrome',
+    sepia: 'effect-sepia',
+    marvin: 'effect-marvin',
+    phobos: 'effect-phobos',
+    heat: 'effect-heat'
+  };
+
   var pictureEditModal = document.querySelector('.img-upload__overlay');
   var picturePreview = pictureEditModal.querySelector('.img-upload__preview img');
   var saturationControlSet = pictureEditModal.querySelector('.effect-level');
@@ -44,22 +53,22 @@ window.effects = (function () {
   // Переключатель между классами
   function onEffectPreviewClick(evt) {
     switch (evt.target.id) {
-      case 'effect-none':
+      case Effect.none:
         setSourceEffect();
         break;
-      case 'effect-chrome':
+      case Effect.chrome:
         applyEffect('effects__preview--chrome');
         break;
-      case 'effect-sepia':
+      case Effect.sepia:
         applyEffect('effects__preview--sepia');
         break;
-      case 'effect-marvin':
+      case Effect.marvin:
         applyEffect('effects__preview--marvin');
         break;
-      case 'effect-phobos':
+      case Effect.phobos:
         applyEffect('effects__preview--phobos');
         break;
-      case 'effect-heat':
+      case Effect.heat:
         applyEffect('effects__preview--heat');
         break;
     }

@@ -34,17 +34,14 @@ window.error = (function () {
 
   }
 
-  function createErrorMessage(message, type) {
+  function createErrorMessage(message, errorButtonText) {
     var errorMessage = errorTemplate.cloneNode(true);
     var fragment = document.createDocumentFragment();
     var errorCloseButton = errorMessage.querySelector('.error__button');
     var errorTitle = errorMessage.querySelector('.error__title');
 
     errorTitle.textContent = message;
-
-    if (type) {
-      errorCloseButton.textContent = 'Закрыть';
-    }
+    errorCloseButton.textContent = errorButtonText;
 
     fragment.appendChild(errorMessage);
     main.appendChild(fragment);
@@ -55,19 +52,12 @@ window.error = (function () {
   }
 
 
-  var onLoadError = function (message) {
-    var isLoad = true;
-    createErrorMessage(message, isLoad);
-  };
-
-  var onSendError = function (message) {
-    var isLoad = false;
-    createErrorMessage(message, isLoad);
+  var onError = function (message, errorButtonText) {
+    createErrorMessage(message, errorButtonText);
   };
 
   return {
-    onLoadError: onLoadError,
-    onSendError: onSendError
+    onError: onError,
   };
 
 })();

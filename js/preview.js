@@ -3,22 +3,23 @@
 window.preview = (function () {
 
   var COMMENTS_AMOUNT = 5;
+  var commentsDataCopy = [];
+  var showCommentCount;
 
   // Для работы с модальным окном фотографии из превью главной страницы
   var bigPictureModal = document.querySelector('.big-picture');
   var commentsList = bigPictureModal.querySelector('.social__comments');
   var commentTemplate = bigPictureModal.querySelector('.social__comment');
+  var commentCount = bigPictureModal.querySelector('.social__comment-count');
   var commentLoadButton = bigPictureModal.querySelector('.comments-loader');
 
   // Скрывает информационные элементы
-  function hideControlElement() {
-    bigPictureModal.querySelector('.social__comment-count').classList.add('hidden');
+  function hideLoadButton() {
     commentLoadButton.classList.add('hidden');
   }
 
   // Показывает информационные элементы
-  function showControlElement() {
-    bigPictureModal.querySelector('.social__comment-count').classList.remove('hidden');
+  function showLoadButton() {
     commentLoadButton.classList.remove('hidden');
   }
 
@@ -33,48 +34,55 @@ window.preview = (function () {
     return commentElement;
   }
 
-  // Выполняет сброс и вставляет новые комментарии из фрагмента
-  function renderComments(list, fragment) {
-    list.innerHTML = '';
-    list.appendChild(fragment);
+  function renderComments(comments) {
+    var shownComments = comments.splice(0, COMMENTS_AMOUNT);
+    var length = shownComments.length;
+    var fragment = window.utils.addToFragment(shownComments, createCommentElement);
+
+    showCommentCount += length;
+    commentCount.childNodes[0].textContent = showCommentCount + ' из ';
+    commentsList.appendChild(fragment);
   }
 
-  // Колличество загружаемых комментариев
-  function setCommentsAmount(comments) {
-    var length = comments.length;
+  function onCommentsLoadButtonClick() {
+    renderComments(commentsDataCopy);
 
-    if (length <= COMMENTS_AMOUNT) {
-      hideControlElement();
-      return length;
-    } else {
-      showControlElement();
-      return COMMENTS_AMOUNT;
+    if (commentsDataCopy.length === 0) {
+      commentLoadButton.removeEventListener('click', onCommentsLoadButtonClick);
+      hideLoadButton();
     }
   }
 
   // Заполняем поля модального окна фотографии
-  function fillBigPicture(picture) {
+  function fillBigPicture(picture, data) {
     var usersPictures = document.querySelectorAll('.picture__img');
 
     usersPictures.forEach(function (element, index) {
       if (picture === element) {
-        var pictureObject = window.picturesList[index];
-        var comments = pictureObject.comments;
-        var fragment = window.utils.addToFragment(comments, setCommentsAmount(comments), createCommentElement);
+        var pictureObject = data[index];
+        commentsDataCopy = pictureObject.comments.slice();
 
         bigPictureModal.querySelector('.big-picture__img img').src = pictureObject.url;
         bigPictureModal.querySelector('.likes-count').textContent = pictureObject.likes;
         bigPictureModal.querySelector('.comments-count').textContent = pictureObject.comments.length;
         bigPictureModal.querySelector('.social__caption').textContent = pictureObject.description;
 
-        renderComments(commentsList, fragment);
+        showCommentCount = 0;
+        commentsList.innerHTML = '';
+        renderComments(commentsDataCopy);
+
+        if (pictureObject.comments.length > COMMENTS_AMOUNT) {
+          showLoadButton();
+          commentLoadButton.addEventListener('click', onCommentsLoadButtonClick);
+        }
       }
     });
   }
 
   return {
-    hideControlElement: hideControlElement,
     fillBigPicture: fillBigPicture,
+    renderComments: renderComments,
+    onCommentsLoadButtonClick: onCommentsLoadButtonClick
   };
 
 })();

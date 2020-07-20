@@ -6,6 +6,7 @@ window.main = (function () {
   var picturesContainer = document.querySelector('.pictures');
   var bigPictureClose = document.querySelector('#picture-cancel');
   var bigPictureModal = document.querySelector('.big-picture');
+  var commentLoadButton = bigPictureModal.querySelector('.comments-loader');
 
   // Работа с загрузкой фотографий
   var pictureEditModal = document.querySelector('.img-upload__overlay');
@@ -66,18 +67,22 @@ window.main = (function () {
   function onFormSubmit(evt) {
     evt.preventDefault();
     closeModal();
-    window.backend.send(new FormData(form), window.success.onSuccess, window.error.onSendError);
+    window.backend.send(new FormData(form), window.success.onSuccess, window.error.onError);
   }
 
   // Обработчик открытия модального окна для каждой фотографии
   picturesContainer.addEventListener('click', function (evt) {
     var target = evt.target;
     var picture = target.matches('.picture__img');
+    var data = window.gallery.picturesData;
+
+    if (window.filter.filteredPictures.length !== 0) {
+      data = window.filter.filteredPictures;
+    }
 
     if (target && picture) {
       evt.preventDefault();
-      // window.preview.hideControlElement();
-      window.preview.fillBigPicture(target);
+      window.preview.fillBigPicture(target, data);
       showModal(bigPictureModal);
     }
   });
@@ -86,6 +91,8 @@ window.main = (function () {
   bigPictureClose.addEventListener('click', function (evt) {
     evt.preventDefault();
     closeModal();
+
+    commentLoadButton.removeEventListener('click', window.preview.onCommentsLoadButtonClick);
   });
 
   // Обработчик открытия редактирования фото

@@ -74,10 +74,15 @@ window.main = (function () {
   picturesContainer.addEventListener('click', function (evt) {
     var target = evt.target;
     var picture = target.matches('.picture__img');
+    var data = window.gallery.picturesData;
+
+    if (window.filter.filteredPictures.length !== 0) {
+      data = window.filter.filteredPictures;
+    }
 
     if (target && picture) {
       evt.preventDefault();
-      window.preview.fillBigPicture(target);
+      window.preview.fillBigPicture(target, data);
       showModal(bigPictureModal);
     }
   });

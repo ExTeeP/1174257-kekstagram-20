@@ -2,12 +2,13 @@
 
 window.gallery = (function () {
 
-  var PICTURES_AMOUNT = 25;
+  // var PICTURES_AMOUNT = 10;
   var picturesData = [];
 
   // Для работы с фотографиями на главной странице
   var picturesContainer = document.querySelector('.pictures');
   var pictureTemplate = document.querySelector('#picture').content.querySelector('.picture');
+  var pictureFilters = document.querySelector('.img-filters');
 
   // Клонирует шаблон фото и заполняет его
   function fillPicture(picture) {
@@ -22,18 +23,29 @@ window.gallery = (function () {
   }
 
   function renderPictures(data) {
-    picturesContainer.appendChild(window.utils.addToFragment(data, PICTURES_AMOUNT, fillPicture));
+    picturesContainer.appendChild(window.utils.addToFragment(data, fillPicture));
   }
+
+  var removePictures = function () {
+    var shownPictures = picturesContainer.querySelectorAll('.picture');
+
+    shownPictures.forEach(function (picture) {
+      picturesContainer.removeChild(picture);
+    });
+  };
 
   function onLoadSuccess(data) {
     window.gallery.picturesData = data;
     renderPictures(data);
+    pictureFilters.classList.remove('img-filters--inactive');
   }
 
   window.backend.load(onLoadSuccess, window.error.onError);
 
   return {
-    picturesData: picturesData
+    picturesData: picturesData,
+    renderPictures: renderPictures,
+    removePictures: removePictures
   };
 
 })();

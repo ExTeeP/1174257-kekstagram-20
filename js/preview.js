@@ -37,7 +37,7 @@ window.preview = (function () {
   function renderComments(comments) {
     var shownComments = comments.splice(0, COMMENTS_AMOUNT);
     var length = shownComments.length;
-    var fragment = window.utils.addToFragment(shownComments, length, createCommentElement);
+    var fragment = window.utils.addToFragment(shownComments, createCommentElement);
 
     showCommentCount += length;
     commentCount.childNodes[0].textContent = showCommentCount + ' из ';
@@ -54,12 +54,12 @@ window.preview = (function () {
   }
 
   // Заполняем поля модального окна фотографии
-  function fillBigPicture(picture) {
+  function fillBigPicture(picture, data) {
     var usersPictures = document.querySelectorAll('.picture__img');
 
     usersPictures.forEach(function (element, index) {
       if (picture === element) {
-        var pictureObject = window.gallery.picturesData[index];
+        var pictureObject = data[index];
         commentsDataCopy = pictureObject.comments.slice();
 
         bigPictureModal.querySelector('.big-picture__img img').src = pictureObject.url;

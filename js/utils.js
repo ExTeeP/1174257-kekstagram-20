@@ -1,6 +1,7 @@
 'use strict';
 
 window.utils = (function () {
+  var DEBOUNCE_INTERVAL = 500;
 
   // Рандомное число из промежутка или рандомное число
   function getRandomInt(min, max) {
@@ -17,13 +18,13 @@ window.utils = (function () {
   }
 
   // Добавляет в фрагмент элементы для последующего вывода на страницу
-  function addToFragment(elements, count, callback) {
+  function addToFragment(elements, callback) {
     if (callback && typeof callback === 'function') {
       var fragment = document.createDocumentFragment();
 
-      for (var i = 0; i < count; i++) {
-        fragment.appendChild(callback(elements[i]));
-      }
+      elements.forEach(function (element) {
+        fragment.appendChild(callback(element));
+      });
 
       return fragment;
     }
@@ -31,10 +32,48 @@ window.utils = (function () {
     return null;
   }
 
+  // Перемешивание массива
+  function getShuffleArray(array, iteration) {
+    var arrayCopy = array.slice();
+    var currentIndex = iteration ? iteration : arrayCopy.length;
+    var temporaryValue;
+    var randomIndex;
+
+    while (currentIndex !== 0) {
+
+      randomIndex = window.utils.getRandomInt(currentIndex);
+      currentIndex -= 1;
+
+      temporaryValue = arrayCopy[currentIndex];
+      arrayCopy[currentIndex] = arrayCopy[randomIndex];
+      arrayCopy[randomIndex] = temporaryValue;
+    }
+
+    return iteration ? arrayCopy.splice(0, iteration) : arrayCopy;
+  }
+
+  function debounce(callback) {
+    var lastTimeout = null;
+
+    return function () {
+      var parameters = arguments;
+
+      if (lastTimeout) {
+        window.clearTimeout(lastTimeout);
+      }
+
+      lastTimeout = window.setTimeout(function () {
+        callback.apply(null, parameters);
+      }, DEBOUNCE_INTERVAL);
+    };
+  }
+
   return {
     getRandomInt: getRandomInt,
     getRandomElement: getRandomElement,
-    addToFragment: addToFragment
+    addToFragment: addToFragment,
+    getShuffleArray: getShuffleArray,
+    debounce: debounce
   };
 
 })();

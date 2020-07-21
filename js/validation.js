@@ -10,13 +10,24 @@ window.validation = (function () {
   var MAX_HASHTAGS = 5;
   var MAX_HASHTAG_CHARACTERS = 20;
 
+  function setCustomBorder(evt) {
+    evt.target.style.outline = 'red';
+    evt.target.style.boxShadow = '0 0 0 2px red';
+  }
+
+  function removeCustomBorder(evt) {
+    evt.target.style.outline = 'initial';
+    evt.target.style.boxShadow = 'none';
+  }
+
   // Проверка поля на валидность
   function onPicteruDescriptionChange(evt) {
-
     if (evt.target.textLength > MAX_LENGTH_DESC || evt.target.toLoong) {
       evt.target.setCustomValidity('Комментарий не может быть больше 140 символов');
+      setCustomBorder(evt);
     } else {
       evt.target.setCustomValidity('');
+      removeCustomBorder(evt);
     }
   }
 
@@ -39,14 +50,14 @@ window.validation = (function () {
   }
 
   // Добавляет сообщение об ошибке в массив с ошибками
-  var pushErrorMessage = function (errorMessage, errorMessagesArr) {
+  function pushErrorMessage(errorMessage, errorMessagesArr) {
     if (errorMessagesArr.indexOf(errorMessage) === -1) {
       errorMessagesArr.push(errorMessage);
     }
-  };
+  }
 
   // Проверяет хештеги на наличие ошибок
-  var createValidityMessages = function (notEmptyHashtags) {
+  function createValidityMessages(notEmptyHashtags) {
     var errorMessages = [];
 
     if (notEmptyHashtags.length > MAX_HASHTAGS) {
@@ -68,15 +79,18 @@ window.validation = (function () {
     });
 
     return errorMessages;
-  };
+  }
 
   // Показывает сообщения об ошибках
   function showValidityErrors(evt, hashtagsArr) {
     var errors = createValidityMessages(hashtagsArr);
+
     if (errors.length !== 0) {
       evt.target.setCustomValidity(errors.join('\n'));
+      setCustomBorder(evt);
     } else {
       evt.target.setCustomValidity('');
+      removeCustomBorder(evt);
     }
   }
 
@@ -84,6 +98,7 @@ window.validation = (function () {
   function onPictureHashtragChange(evt) {
     var allHashtags = createHashtags(evt.target);
     var correctHashtags = removeEmptyHashtag(allHashtags);
+
     showValidityErrors(evt, correctHashtags);
   }
 

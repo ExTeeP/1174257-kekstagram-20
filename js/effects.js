@@ -3,12 +3,12 @@
 window.effects = (function () {
 
   var Effect = {
-    none: 'effect-none',
-    chrome: 'effect-chrome',
-    sepia: 'effect-sepia',
-    marvin: 'effect-marvin',
-    phobos: 'effect-phobos',
-    heat: 'effect-heat'
+    NONE: 'effect-none',
+    CHROME: 'effect-chrome',
+    SEPIA: 'effect-sepia',
+    MARVIN: 'effect-marvin',
+    PHOBOS: 'effect-phobos',
+    HEAT: 'effect-heat'
   };
 
   var pictureEditModal = document.querySelector('.img-upload__overlay');
@@ -53,22 +53,22 @@ window.effects = (function () {
   // Переключатель между классами
   function onEffectPreviewClick(evt) {
     switch (evt.target.id) {
-      case Effect.none:
+      case Effect.NONE:
         setSourceEffect();
         break;
-      case Effect.chrome:
+      case Effect.CHROME:
         applyEffect('effects__preview--chrome');
         break;
-      case Effect.sepia:
+      case Effect.SEPIA:
         applyEffect('effects__preview--sepia');
         break;
-      case Effect.marvin:
+      case Effect.MARVIN:
         applyEffect('effects__preview--marvin');
         break;
-      case Effect.phobos:
+      case Effect.PHOBOS:
         applyEffect('effects__preview--phobos');
         break;
-      case Effect.heat:
+      case Effect.HEAT:
         applyEffect('effects__preview--heat');
         break;
     }

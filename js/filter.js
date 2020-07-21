@@ -13,8 +13,10 @@ window.filter = (function () {
   function toggleActiveFilter(selectedFilter) {
     var activeFilter = filterForm.querySelector('.img-filters__button--active');
 
-    activeFilter.classList.remove('img-filters__button--active');
-    selectedFilter.classList.add('img-filters__button--active');
+    if (selectedFilter.tagName === 'BUTTON') {
+      activeFilter.classList.remove('img-filters__button--active');
+      selectedFilter.classList.add('img-filters__button--active');
+    }
   }
 
   function showDefaultPictures() {

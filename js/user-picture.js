@@ -8,7 +8,7 @@ window.userPicture = (function () {
   var uploadInput = document.querySelector('.img-upload__input');
   var effectsPreview = pictureEditModal.querySelectorAll('.effects__preview');
 
-  function uploadInputChangeHandler() {
+  function onUploadInputChange() {
     var file = uploadInput.files[0];
     var fileName = file.name.toLowerCase();
 
@@ -18,7 +18,7 @@ window.userPicture = (function () {
 
     if (!matches) {
       window.main.closeModal();
-      window.error.onError('Недопустимый формат. Фотография должна быть в формате gif, jpg, jpeg или png!', 'Загрузить другую фотографию');
+      window.error.onError('Фотография должна быть в формате gif, jpg, jpeg или png!', 'Загрузить другую фотографию');
     }
 
     var reader = new FileReader();
@@ -34,5 +34,5 @@ window.userPicture = (function () {
     reader.readAsDataURL(file);
   }
 
-  uploadInput.addEventListener('change', uploadInputChangeHandler);
+  uploadInput.addEventListener('change', onUploadInputChange);
 })();

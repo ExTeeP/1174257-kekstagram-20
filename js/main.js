@@ -162,4 +162,8 @@ window.main = (function () {
     form.removeEventListener('submit', onFormSubmit);
   });
 
+  return {
+    closeModal: closeModal
+  };
+
 })();

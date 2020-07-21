@@ -51,10 +51,9 @@ window.error = (function () {
     document.addEventListener('keydown', onKeydownErrorMessage);
   }
 
-
-  var onError = function (message, errorButtonText) {
+  function onError(message, errorButtonText) {
     createErrorMessage(message, errorButtonText);
-  };
+  }
 
   return {
     onError: onError,

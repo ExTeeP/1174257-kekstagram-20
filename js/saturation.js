@@ -28,7 +28,7 @@ window.saturation = (function () {
   }
 
   // В зависимости от класс изменяет насыщеность
-  var setSaturation = function (percent) {
+  function setSaturation(percent) {
     Array.from(picturePreview.classList, function (element) {
       if (element.match('effects__preview--')) {
         switch (element) {
@@ -52,7 +52,7 @@ window.saturation = (function () {
         }
       }
     });
-  };
+  }
 
   // Передвижение пина и изменение значений эффекта
   function onSaturationPinMove(evt) {

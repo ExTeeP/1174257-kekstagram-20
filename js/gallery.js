@@ -25,13 +25,13 @@ window.gallery = (function () {
     picturesContainer.appendChild(window.utils.addToFragment(data, fillPicture));
   }
 
-  var removePictures = function () {
+  function removePictures() {
     var shownPictures = picturesContainer.querySelectorAll('.picture');
 
     shownPictures.forEach(function (picture) {
       picturesContainer.removeChild(picture);
     });
-  };
+  }
 
   function onLoadSuccess(data) {
     window.gallery.picturesData = data;

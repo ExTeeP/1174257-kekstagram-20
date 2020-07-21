@@ -10,6 +10,16 @@ window.validation = (function () {
   var MAX_HASHTAGS = 5;
   var MAX_HASHTAG_CHARACTERS = 20;
 
+  function setCustomBorder(evt) {
+    evt.target.style.outline = 'none';
+    evt.target.style.boxShadow = '0 0 0 2px red';
+  }
+
+  function removeCustomBorder(evt) {
+    evt.target.style.outline = 'initial';
+    evt.target.style.boxShadow = 'none';
+  }
+
   // Проверка поля на валидность
   function onPicteruDescriptionChange(evt) {
 

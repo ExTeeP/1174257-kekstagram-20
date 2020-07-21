@@ -39,6 +39,7 @@ window.main = (function () {
     node.classList.remove('active-popup');
     document.removeEventListener('keydown', onModalEscPress);
     node.removeAttribute('tabIndex');
+    resetUploadImage();
   }
 
   // Сброс значения инпута загрузки файла при закрытии окна редактирования фото
@@ -66,12 +67,11 @@ window.main = (function () {
 
   function onFormSubmit(evt) {
     evt.preventDefault();
-    closeModal();
     window.backend.send(new FormData(form), window.success.onSuccess, window.error.onError);
+    closeModal();
   }
 
-  // Обработчик открытия модального окна для каждой фотографии
-  picturesContainer.addEventListener('click', function (evt) {
+  function onPicturesContainerClick(evt) {
     var target = evt.target;
     var picture = target.matches('.picture__img');
     var data = window.gallery.picturesData;
@@ -85,7 +85,26 @@ window.main = (function () {
       window.preview.fillBigPicture(target, data);
       showModal(bigPictureModal);
     }
-  });
+  }
+
+  function onPicturesContainerEnterPress(evt) {
+    if (evt.key === 'Enter' && evt.target.classList.contains('picture')) {
+      evt.preventDefault();
+      var picture = evt.target.firstElementChild;
+      var data = window.gallery.picturesData;
+
+      window.preview.fillBigPicture(picture, data);
+      showModal(bigPictureModal);
+
+      if (window.filter.filteredPictures.length !== 0) {
+        data = window.filter.filteredPictures;
+      }
+    }
+  }
+
+  // Обработчик открытия модального окна для каждой фотографии
+  picturesContainer.addEventListener('click', onPicturesContainerClick);
+  picturesContainer.addEventListener('keydown', onPicturesContainerEnterPress);
 
   // Обработчик закрытия модального окна фотографии
   bigPictureClose.addEventListener('click', function (evt) {
@@ -123,7 +142,6 @@ window.main = (function () {
   // Обработчик закрытия модального окна редактирования фотографии
   pictureEditClose.addEventListener('click', function (evt) {
     evt.preventDefault();
-    resetUploadImage();
     closeModal();
 
     scaleIncrease.removeEventListener('click', window.scale.onScaleIncreaseClick);

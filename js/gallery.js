@@ -2,7 +2,6 @@
 
 window.gallery = (function () {
 
-  // var PICTURES_AMOUNT = 10;
   var picturesData = [];
 
   // Для работы с фотографиями на главной странице

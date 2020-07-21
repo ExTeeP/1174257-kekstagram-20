@@ -6,11 +6,11 @@ window.saturation = (function () {
   var SATURATION_DEFAULT = 100;
 
   var Effect = {
-    chrome: 'effects__preview--chrome',
-    sepia: 'effects__preview--sepia',
-    marvin: 'effects__preview--marvin',
-    phobos: 'effects__preview--phobos',
-    heat: 'effects__preview--heat'
+    CHROME: 'effects__preview--chrome',
+    SEPIA: 'effects__preview--sepia',
+    MARVIN: 'effects__preview--marvin',
+    PHOBOS: 'effects__preview--phobos',
+    HEAT: 'effects__preview--heat'
   };
 
   var pictureEditModal = document.querySelector('.img-upload__overlay');
@@ -32,19 +32,19 @@ window.saturation = (function () {
     Array.from(picturePreview.classList, function (element) {
       if (element.match('effects__preview--')) {
         switch (element) {
-          case Effect.chrome:
+          case Effect.CHROME:
             picturePreview.style.filter = 'grayscale(' + percent / 100 + ')';
             break;
-          case Effect.sepia:
+          case Effect.SEPIA:
             picturePreview.style.filter = 'sepia(' + percent / 100 + ')';
             break;
-          case Effect.marvin:
+          case Effect.MARVIN:
             picturePreview.style.filter = 'invert(' + percent + '%)';
             break;
-          case Effect.phobos:
+          case Effect.PHOBOS:
             picturePreview.style.filter = 'blur(' + (percent * 3 / 100) + 'px)';
             break;
-          case Effect.heat:
+          case Effect.HEAT:
             picturePreview.style.filter = 'brightness(' + percent * 3 / 100 + ')';
             break;
           default:
